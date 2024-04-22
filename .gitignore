@@ -1,4 +1,7 @@
+# Ignore specific files
 to_do.txt
 try.ipynb
 preprocessing_v1.ipynb
+AI_detect_v2.ipynb
+AI_detect.ipynb
 *.joblib
