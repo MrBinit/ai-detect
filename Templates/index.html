@@ -3,31 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Image Detector</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>AI Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>AI Image Detector</h1>
-        <div class="upload-container" id="uploadContainer">
-            <label for="imageUpload" class="upload-label">
-                <span>Drop Image Here or Click to Upload</span>
-                <input type="file" id="imageUpload" accept="image/*">
-            </label>
+        <h1>AI Detector</h1>
+        <div class="input-container">
+            <input type="file" id="imageInput" accept="image/*">
+            <label for="imageInput">Drop image here or click to upload</label>
         </div>
-        <div class="loader" id="loader">
-            <div class="loader-bar" id="loaderBar"></div>
-        </div>
-        <div class="result-container" id="resultContainer">
-            <h2>Prediction Result</h2>
-            <p id="predictionText">Upload an image to check if it's AI-generated or real.</p>
-            <div class="prediction-bar">
-                <div class="prediction-bar-fill" id="predictionBarFill"></div>
-            </div>
-            <p id="predictionProb"></p>
+        <div class="output-container">
+            <div class="loader" id="loader"></div>
+            <div id="result" style="display: none;"></div>
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
