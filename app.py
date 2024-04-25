@@ -1,56 +1,57 @@
-from flask import Flask, render_template
+import os
+from flask import Flask, request, jsonify, render_template
+import tensorflow as tf
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.efficientnet import preprocess_input
 
-app = Flask(__name__, static_folder='static')  # Specify the static folder
+app = Flask(__name__)
 
-@app.route('/')
+# path to the SavedModel directory
+model_path = '/Users/mrbinit/Desktop/AI detect/saved_model 2'
+
+# Load the SavedModel using tf.saved_model.load
+model = tf.saved_model.load(model_path)
+
+# Function to preprocess the uploaded image
+def preprocess_image(file_path, image_size=(380, 380)):
+    img = tf.io.read_file(file_path)
+    img = tf.image.decode_jpeg(img, channels=3)  # Ensure 3 channels (RGB)
+    img = tf.image.resize(img, image_size)
+    img = preprocess_input(img)
+    img = tf.expand_dims(img, axis=0)  # Add batch dimension
+    return img
+
+# Route to handle index page and image prediction
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    if request.method == 'GET':
+        return render_template('index.html', prediction=None)
+
+    if request.method == 'POST':
+        if 'image' not in request.files:
+            return jsonify({'error': 'No image uploaded'})
+
+        # Save the uploaded image to a temporary file
+        img = request.files['image']
+        img_path = 'temp.jpg'
+        img.save(img_path)
+
+        # Preprocess the uploaded image
+        processed_img = preprocess_image(img_path)
+
+        # Make prediction using the loaded model
+        prediction = model(processed_img)  # Assuming the model outputs a single scalar value
+        probability_real = tf.sigmoid(prediction).numpy()  # Apply sigmoid to get probability
+        probability_fake = 1.0 - probability_real  # Calculate probability for "AI-generated"
+
+        # Remove the temporary uploaded image
+        os.remove(img_path)
+
+        # Return prediction result to the template
+        return render_template('index.html', prediction={
+            'probability_real': float(probability_real),
+            'probability_fake': float(probability_fake)
+        })
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
-# import os
-# from flask import Flask, request, jsonify
-# from tensorflow.keras.models import load_model
-# from tensorflow.keras.preprocessing import image
-# import numpy as np
-
-# app = Flask(__name__)
-
-# # Load the pre-trained model
-# model = load_model('ai_model.h5')
-
-# # Function to preprocess the uploaded image
-# def preprocess_image(img_path):
-#     img = image.load_img(img_path, target_size=(224, 224))
-#     img_array = image.img_to_array(img)
-#     img_array = np.expand_dims(img_array, axis=0)
-#     img_array /= 255.0  # Normalize pixel values
-#     return img_array
-
-# # Route to handle image prediction
-# @app.route('/predict', methods=['POST'])
-# def predict():
-#     if 'image' not in request.files:
-#         return jsonify({'error': 'No image uploaded'})
-
-#     img = request.files['image']
-#     img_path = os.path.join('uploads', img.filename)
-#     img.save(img_path)
-
-#     processed_img = preprocess_image(img_path)
-#     prediction = model.predict(processed_img)
-
-#     # Assuming prediction[0][0] is the probability for AI-generated image
-#     ai_probability = prediction[0][0]
-#     label = 'AI-generated' if ai_probability >= 0.5 else 'Real'
-
-#     os.remove(img_path)  # Remove the uploaded image
-
-#     return jsonify({'probability': float(ai_probability), 'label': label})
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
