@@ -1,34 +1,126 @@
-<!-- 
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Upload Image</title>
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 100px;
+            height: 100%;
+        }
+         .container {
+            max-width: 600px;
+            margin: auto;
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #drop_zone {
+            border: 2px dashed #aaa;
+            width: 100%;
+            height: 200px;
+            line-height: 200px;
+            color: #aaa;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        #drop_zone.hover {
+            border-color: #007bff;
+            color: #007bff;
+        }
+        #uploaded_image {
+            max-width: 100%;
+            display: none;
+        }
+        #file_input, #predict_button{
+            display: inline-block;
+            width: 200px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: purple;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out; /* Animation effect */
+        }
+        #predict_button:hover {
+            /* Hover effect */
+            transform: scale(1.1); /* Scale up on hover */
+            background-color: #6a0dad; /* Darker shade of purple */
+        }
+        #reply {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50%;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#reply h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#reply p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+    </style>
 </head>
 <body>
+    <h2>AI detector</h2>
+   <div class="container">
     <h2>Upload an Image</h2>
     <form action="/" method="post" enctype="multipart/form-data">
-        <input type="file" name="image" accept="image/*" required>
-        <button type="submit">Predict</button>
+        <input id="file_input" type="file" name="image" accept="image/*" required>
+        <button id="predict_button" type="submit">Predict</button>
     </form>
+   </div>
 
     {% if prediction %}
-    <h2>Prediction:</h2>
-    <p>Probability Real: {{ "%.2f" % (prediction.probability_real * 100) }}%</p>
-    <p>Probability AI-generated: {{ "%.2f" % (prediction.probability_fake * 100) }}%</p>
+    <div id="reply">
+        <h2>Prediction:</h2>
+        <p id="probability_real">Image Real probability: {{ "%.2f" % (prediction.probability_real * 100) }}%</p>
+        <p id="probability_fake">Probability AI-generated: {{ "%.2f" % (prediction.probability_fake * 100) }}%</p>
+    </div>
+    
     {% endif %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Reset file input value to null on page load
+            document.getElementById('file_input').value = null;
+        });
+
+    </script>
+    
 </body>
 </html>
 
- -->
-
-<!-- /Users/mrbinit/Desktop/AI detect/templates/index.html -->
 
 
 <!-- /Users/mrbinit/Desktop/AI detect/templates/index.html -->
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -73,7 +165,7 @@
         </div>
         <img id="uploaded_image" src="" alt="Uploaded Image">
         <form id="upload_form" enctype="multipart/form-data" style="display: none;">
-            <input type="file" name="image" id="file_input" accept="image/*" onchange="handleFileSelect(event)">
+            <input type="file" name="image" id="file_input" accept="image/*" onchange="handleFileSelect(event)" ondrop="handleFileSelect(event)">
         </form>
         <button onclick="predictImage()">Predict</button>
         <div id="loading" style="display: none;">
@@ -92,6 +184,7 @@
             event.preventDefault();
             event.stopPropagation();
             event.target.classList.add('hover');
+            console.log("Here")
         }
 
         function handleFileSelect(event) {
@@ -100,6 +193,7 @@
             event.target.classList.remove('hover');
 
             var file = event.dataTransfer ? event.dataTransfer.files[0] : event.target.files[0];
+            console.log
             if (file) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
@@ -147,4 +241,4 @@
         }
     </script>
 </body>
-</html>
+</html> -->
