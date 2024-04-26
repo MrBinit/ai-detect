@@ -1,32 +1,4 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Detector</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='./../static/css/style.css') }}">
-    
-</head>
-<body>
-    <div class="container">
-        <h1>AI Detector</h1>
-        <div class="input-container">
-            <input type="file" id="imageInput" accept="image/*">
-            <label for="imageInput">Drop image here or click to upload</label>
-        </div>
-        <div class="output-container">
-            <div class="loader" id="loader"></div>
-            <div id="result" style="display: none;"></div>
-        </div>
-    </div>
-
-    <script src="{{ url_for('static', filename='./../static/js/script.js') }}"></script>
-    <!-- <script src = "./../static/js/script.js"></script> -->
-</body>
-</html> -->
-
-
-<!-- /Users/mrbinit/Desktop/AI detect/templates/index.html -->
+<!-- 
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,9 +15,136 @@
 
     {% if prediction %}
     <h2>Prediction:</h2>
-    <p>Probability Real: {{ prediction.probability_real }}</p>
-    <p>Probability AI-generated: {{ prediction.probability_fake }}</p>
+    <p>Probability Real: {{ "%.2f" % (prediction.probability_real * 100) }}%</p>
+    <p>Probability AI-generated: {{ "%.2f" % (prediction.probability_fake * 100) }}%</p>
     {% endif %}
 </body>
 </html>
 
+ -->
+
+<!-- /Users/mrbinit/Desktop/AI detect/templates/index.html -->
+
+
+<!-- /Users/mrbinit/Desktop/AI detect/templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Detection</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: auto;
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #drop_zone {
+            border: 2px dashed #aaa;
+            width: 100%;
+            height: 200px;
+            line-height: 200px;
+            color: #aaa;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        #drop_zone.hover {
+            border-color: #007bff;
+            color: #007bff;
+        }
+        #uploaded_image {
+            max-width: 100%;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Detection</h1>
+        <div id="drop_zone" class="drop_zone" ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)">
+            Drag Image Here or Click to Upload
+        </div>
+        <img id="uploaded_image" src="" alt="Uploaded Image">
+        <form id="upload_form" enctype="multipart/form-data" style="display: none;">
+            <input type="file" name="image" id="file_input" accept="image/*" onchange="handleFileSelect(event)">
+        </form>
+        <button onclick="predictImage()">Predict</button>
+        <div id="loading" style="display: none;">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.16.1/images/loader-large.gif" alt="Loading...">
+            <p>Loading...</p>
+        </div>
+        <div id="result" style="display: none;">
+            <h2>Prediction:</h2>
+            <p id="probability_real"></p>
+            <p id="probability_fake"></p>
+        </div>
+    </div>
+
+    <script>
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.target.classList.add('hover');
+        }
+
+        function handleFileSelect(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.target.classList.remove('hover');
+
+            var file = event.dataTransfer ? event.dataTransfer.files[0] : event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.maxWidth = '100%';
+                    document.getElementById('drop_zone').innerHTML = '';
+                    document.getElementById('drop_zone').appendChild(img);
+                    document.getElementById('uploaded_image').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                document.getElementById('file_input').files = event.target.files;
+            }
+        }
+
+        async function predictImage() {
+            var fileInput = document.getElementById('file_input');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Please upload an image.');
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                var response = await fetch('/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                var result = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('probability_real').textContent = 'Probability Real: ' + (result.probability_real * 100).toFixed(2) + '%';
+                document.getElementById('probability_fake').textContent = 'Probability AI-generated: ' + (result.probability_fake * 100).toFixed(2) + '%';
+            } catch (error) {
+                console.error('Prediction error:', error);
+                alert('An error occurred during prediction.');
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
