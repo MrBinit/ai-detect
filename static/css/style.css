@@ -30,3 +30,90 @@ body{
     max-width: 100%;
     display: none;
 }
+
+
+
+
+
+/* changws */
+
+<style>
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    height: 100%;
+}
+ .container {
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+#drop_zone {
+    border: 2px dashed #aaa;
+    width: 100%;
+    height: 200px;
+    line-height: 200px;
+    color: #aaa;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+#drop_zone.hover {
+    border-color: #007bff;
+    color: #007bff;
+}
+#uploaded_image {
+    max-width: 100%;
+    display: none;
+}
+#file_input, #predict_button{
+    display: inline-block;
+    width: 200px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: purple;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out; /* Animation effect */
+}
+#predict_button:hover {
+    /* Hover effect */
+    transform: scale(1.1); /* Scale up on hover */
+    background-color: #6a0dad; /* Darker shade of purple */
+}
+#reply {
+margin-top: 20px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+width: 100%;
+height: 50%;
+padding: 20px;
+border-radius: 5px;
+background-color: #f0f0f0;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#reply h2 {
+color: #333;
+font-size: 24px;
+margin-bottom: 10px;
+}
+
+#reply p {
+font-size: 18px;
+color: #666;
+margin-bottom: 8px;
+}
+
