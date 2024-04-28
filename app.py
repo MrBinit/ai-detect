@@ -7,8 +7,9 @@ from tensorflow.keras.applications.efficientnet import preprocess_input
 app = Flask(__name__)
 
 # path to the SavedModel directory
-model_path = '/Users/mrbinit/Desktop/AI detect/saved_model 2'
+# model_path = '/Users/mrbinit/Desktop/AI detect/saved_model 2'
 
+model_path = '/Users/mrbinit/Desktop/AI detect/saved_model'
 # Load the SavedModel using tf.saved_model.load
 model = tf.saved_model.load(model_path)
 
